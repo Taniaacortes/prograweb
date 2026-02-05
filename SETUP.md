@@ -52,6 +52,8 @@ npm run dev
 
 El proyecto estará disponible en: **http://localhost:5173/**
 
+> **Nota**: Vite usa el puerto 5173 por defecto. Si este puerto está ocupado, automáticamente usará el siguiente disponible (5174, 5175, etc.). La URL correcta se mostrará en la terminal cuando inicies el servidor.
+
 ### Compilar para Producción
 
 Genera los archivos optimizados para producción:
@@ -103,7 +105,7 @@ npm install
 
 ### El servidor no inicia
 
-1. Verifica que el puerto 5173 no esté en uso
+1. Verifica que el puerto 5173 no esté en uso (o usa otro puerto con `npm run dev -- --port 3000`)
 2. Intenta eliminar `node_modules` y reinstalar:
 
 ```bash

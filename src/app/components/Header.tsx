@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, LogOut, Package, Settings } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, LogOut, Package, Settings, Moon, Sun } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import {
@@ -16,6 +17,7 @@ import {
 export const Header: React.FC = () => {
   const { user, logout, isAdmin } = useAuth();
   const { getCartItemsCount } = useCart();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -87,6 +89,18 @@ export const Header: React.FC = () => {
               )}
             </Button>
 
+            {/* Theme Toggle for non-authenticated users */}
+            {!user && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleTheme}
+                className="hidden sm:flex"
+              >
+                {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+              </Button>
+            )}
+
             {/* User Menu */}
             {user ? (
               <DropdownMenu>
@@ -116,6 +130,22 @@ export const Header: React.FC = () => {
                     >
                       <Package className="mr-2 h-4 w-4" />
                       Mis Pedidos
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={toggleTheme}
+                      className="cursor-pointer"
+                    >
+                      {theme === 'light' ? (
+                        <>
+                          <Moon className="mr-2 h-4 w-4" />
+                          Modo Oscuro
+                        </>
+                      ) : (
+                        <>
+                          <Sun className="mr-2 h-4 w-4" />
+                          Modo Claro
+                        </>
+                      )}
                     </DropdownMenuItem>
                   </div>
                   {isAdmin() && (
@@ -214,6 +244,25 @@ export const Header: React.FC = () => {
             >
               Buscar
             </Link>
+            <button
+              onClick={() => {
+                toggleTheme();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-left py-2 hover:text-blue-600 transition-colors flex items-center gap-2"
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon className="h-4 w-4" />
+                  Modo Oscuro
+                </>
+              ) : (
+                <>
+                  <Sun className="h-4 w-4" />
+                  Modo Claro
+                </>
+              )}
+            </button>
           </nav>
         )}
       </div>
