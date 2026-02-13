@@ -4,15 +4,44 @@ import { useProducts } from '../contexts/ProductContext';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from './ui/carousel';
 import { Star, TrendingUp, Dumbbell, Zap, ShoppingBag } from 'lucide-react';
 import { ProductCategory } from '../types';
 
 export const Home: React.FC = () => {
   const { products } = useProducts();
   const navigate = useNavigate();
+  const [api, setApi] = React.useState<CarouselApi>();
 
   const featuredProducts = products.filter((p) => p.featured).slice(0, 4);
   const bestSellers = products.filter((p) => p.bestSeller).slice(0, 4);
+
+  // Imágenes del carrusel del hero - Puedes reemplazar estas URLs con tus propias imágenes
+  const heroImages = [
+    {
+      url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=800&fit=crop',
+      alt: 'Fitness y Suplementos 1',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1920&h=800&fit=crop',
+      alt: 'Fitness y Suplementos 2',
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=1920&h=800&fit=crop',
+      alt: 'Fitness y Suplementos 3',
+    },
+  ];
+
+  // Autoplay del carrusel
+  React.useEffect(() => {
+    if (!api) return;
+
+    const intervalId = setInterval(() => {
+      api.scrollNext();
+    }, 3000); // Cambia cada 5 segundos
+
+    return () => clearInterval(intervalId);
+  }, [api]);
 
   const categories = [
     {
@@ -72,33 +101,58 @@ export const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Banner */}
-      <section className="bg-[#0F0F0F] text-white">
-        <div className="container mx-auto px-4 py-20 md:py-32">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl mb-6">
-              Alcanza Tus Objetivos con los Mejores Suplementos
-            </h1>
-            <p className="text-xl mb-8 text-blue-100">
-              Productos de calidad premium para deportistas que entrenan en serio
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button
-                size="lg"
-                variant="secondary"
-                onClick={() => navigate('/productos')}
-                className="bg-white text-black hover:bg-gray-200"
-              >
-                Comprar Ahora
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('/productos')}
-                className="bg-white text-black hover:bg-gray-200"
-              >
-                Ver Catálogo
-              </Button>
+      {/* Hero Banner with Carousel */}
+      <section className="relative bg-[#0F0F0F] text-white overflow-hidden">
+        <Carousel
+          opts={{ loop: true }}
+          setApi={setApi}
+          className="w-full"
+        >
+          <CarouselContent>
+            {heroImages.map((image, index) => (
+              <CarouselItem key={index}>
+                <div className="relative h-[500px] md:h-[600px]">
+                  <img
+                    src={image.url}
+                    alt={image.alt}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/50" />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-4 bg-white/20 hover:bg-white/30 text-white border-none" />
+          <CarouselNext className="right-4 bg-white/20 hover:bg-white/30 text-white border-none" />
+        </Carousel>
+        
+        <div className="absolute inset-0 flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-2xl">
+              <h1 className="text-4xl md:text-6xl mb-6 font-bold">
+                Alcanza Tus Objetivos con los Mejores Suplementos
+              </h1>
+              <p className="text-xl mb-8 text-blue-100">
+                Productos de calidad premium para deportistas que entrenan en serio
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  onClick={() => navigate('/productos')}
+                  className="bg-white text-black hover:bg-gray-200"
+                >
+                  Comprar Ahora
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate('/productos')}
+                  className="bg-white text-black hover:bg-gray-200"
+                >
+                  Ver Catálogo
+                </Button>
+              </div>
             </div>
           </div>
         </div>
